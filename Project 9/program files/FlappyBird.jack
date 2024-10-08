@@ -1,0 +1,160 @@
+//Implements a Flappy Bird game
+class FlappyBird{
+    field Bird bird; //bird of the game
+    field int bird_height; //height of the bird
+    field Pillar pillar; //moving pillars
+    field int pillar_postion;
+    field int score;
+    field int jump;
+    field int y_limit
+    let y_limit=254;
+    field int x_limit
+    let x_limit=510;
+    constructor FlappyBird(){
+        //var int 
+        let pillar_postition=509;
+        let bird_height=127;
+        let score=0;
+        let jump=10;
+        let bird=Bird.new();
+        let pillar=Pillar.new();
+        return this;
+    }
+    method void reset(){
+        let score=0;
+        let pillar_postion=509;
+        let bird_height=127;
+
+    }
+    method void run(){
+        var key;
+        var boolean exit,pause;
+        var int jump_token;//a token to keep track of how much jump is left to perform
+        let key=0;
+        let exit=false;
+        let pause=false;
+        var move_cnt;//number of cycles for pillar to move forward
+        let move_cnt=0;
+
+        while(~exit){
+            //wait for a key to be pressed
+            do Bird.draw();
+            do Pillar.draw();
+            let position=position-1;// pillar moving forward
+            if(jump_token>0){
+                //bird flying up
+                //check if bird has reached the highest point of the screen
+                if(bird_height>0){
+                    let bird_height=bird_height-1;
+                    let jump_token=jump_token-1;
+                }
+                else{
+                    let jump_token=0;
+                }
+            }
+            else{
+                let bird_height=bird_height-1;
+            }
+            //checking if the game is over(by hitting the pillar or ground)
+            var boolean game_over;
+            let game_over=false;
+            let game_over=check_collision();//check if the bird has hit the pillar
+            if(bird_height=y_limit){
+                let game_over=true;
+            }
+            if(game_over=true){
+                //if collision happens resets the game
+                this.reset();
+                let pause=true;
+                let jump_token=0;
+
+            }
+            if(game_over=false){
+            let key=Keyboard.keyPressed();
+            if(~(key=0)){
+                if(k=81){
+                    //q key 
+                    //exit 
+                    let exit=true;
+                }
+                if(k=80){
+                    //p key
+                    //pause
+                    let exit=this.puase();
+                }
+                if(k=32){
+                    //space key
+                    //jump
+                    if(jump_token=0){
+                        let jump=10;
+                    }
+                }
+            }
+            }
+            else{
+                let game_over=false;
+                
+            }
+            
+        }
+
+    }
+    function boolean check_collision(Bird bird, int bird_height, Pillar pillar, int pillar_pos ){
+        //compare the lowest and highest points of the bird and pillar opening to see if collision occured
+        var int p_x_lower_bound,p_x_upper_bound,b_x_lower_bound,b_x_upper_bound;
+        var int p_y_lower_bound,p_y_upper_bound,b_y_lower_bound,b_y_upper_bound;
+
+        var boolean ans;
+        let ans=false;
+        //assign x boundaries
+        let p_x_upper_bound=Pillar.get_x_upper_bound();
+        let p_x_lower_bound=Pillar.get_x_lower_bound();
+        let b_x_lower_bound=Bird.get_x_lower_bound();
+        let b_x_upper_bound=Bird.get_x_upper_bound();
+        //assign y boundaries
+        let p_y_upper_bound=Pillar.get_y_upper_bound();
+        let p_y_lower_bound=Pillar.get_y_lower_bound();
+        let b_y_lower_bound=Bird.get_y_lower_bound();
+        let b_y_upper_bound=Bird.get_y_upper_bound();
+        //checking y boundaries
+        if((b_y_upper_bound>p_y_lower_bound & b_y_lower_bound<p_y_upper_bound){
+        if(b_upper_bound>p_upper_bound){
+            let ans=true;
+        }
+        if(b_lower_bound<p_lower_bound){
+            let ans=true;
+        }
+        }
+        return ans;
+
+    }
+    method boolean pause(){
+        var int key;
+        var boolean exit;
+        let exit=false;
+        let key=0;
+        while(key=0){
+            let key=Keyboard.keyPressed();
+            if(k=81){
+                //q key 
+                //exit 
+                let exit=true;
+            }
+            else if(k=80){
+                //p key
+                //continue
+
+            }
+            else if(k=32){
+                //space key
+                //continue
+            }
+            else {
+                let key=0;
+            }
+        }
+        return exit;
+    }
+
+
+}
