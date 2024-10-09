@@ -4,21 +4,25 @@ class Pillar{
     field int upper_edge;
     field int x;
     field int y_limit;
-
     field int x_limit;
+    field int gap;
+    //field Random random;
 
     constructor Pillar new(int X){
         let y_limit=254;
         let x_limit=510;
         let x=X;
-        let width=10;
-        let lower_edge=250;
-        let upper_edge=240;
-        return this;}
+        let width=20;
+        let gap=40;
+        let upper_edge=Random.randRange(130)+70;
+        let lower_edge=upper_edge+gap;
+        //let random= Random.new();
+        return this;
+        }
     method void draw(){
-        //do Screen.drawRectangle(x,0,x+width,upper_edge);
-        //do Screen.drawRectangle(x,lower_edge,x+width,y_limit-1);
-        do Screen.drawRectangle(5,0,40,40);
+        do Screen.drawRectangle(x,0,x+width,upper_edge);
+        do Screen.drawRectangle(x,lower_edge,x+width,y_limit-1);
+        //do Screen.drawRectangle(5,5,40,40);
         
         return;
     }

@@ -1,9 +1,7 @@
 //Implements a Flappy Bird game
 class FlappyBird{
     field Bird bird; //bird of the game
-    field int bird_height; //height of the bird
     field Pillar pillar; //moving pillars
-    field int pillar_position;
     field int score;
     field int jump;
     field int y_limit;
@@ -12,20 +10,21 @@ class FlappyBird{
 
     constructor FlappyBird new(){
         //var int 
-        let y_limit=254;
-        let x_limit=510;
-        let pillar_position=490;
-        let bird_height=127;
+        let y_limit=255;
+        let x_limit=511;
+
         let score=0;
         let jump=10;
         let bird=Bird.new(254,127);
-        let pillar=Pillar.new(490);
+        let pillar=Pillar.new(491);
         return this;
     }
     method void reset(){
         let score=0;
-        let pillar_position=490;
-        let bird_height=127;
+        do pillar.dispose();
+        let pillar=Pillar.new(491);
+        do bird.dispose();
+        let bird=Bird.new(254,127);
         return;
 
     }
@@ -33,56 +32,65 @@ class FlappyBird{
         var int key;
         var boolean exit,pause;
         var int jump_token;//a token to keep track of how much jump is left to perform
-        var int move_cnt;//number of cycles for pillar to move forward
+        var int pillar_move_cnt;//number of cycles for pillar to move forward
+        var int bird_move_cnt;//number of cyclees for bird to move
         var boolean game_over;
         let key=0;
         let exit=false;
         let pause=false;
-
-        let move_cnt=0;
+        let jump_token=0;
+        let pillar_move_cnt=0;
+        let bird_move_cnt=0;
 
         while(~exit){
             //clean up the screen and draw figures
-            do Screen.setColor(false);
+            //do Screen.setColor(false);
+            do Screen.clearScreen();
             do bird.draw();
             do pillar.draw();
-            do Screen.setColor(true);
-            while(1){
+            //do Screen.drawLine(491,255,491,255);
 
-            }
 
-            if(move_cnt=0){
+
+            if(pillar_move_cnt=0){
             do pillar.set_x(pillar.get_x()-1);// pillar moving forward
-            if(pillar.get_x()){
+            if(pillar.get_x()=0){
                 do pillar.dispose();
-                let pillar=Pillar.new(500);
+                let pillar=Pillar.new(491);
             }
-            let move_cnt=10;
+            let pillar_move_cnt=30;
             }
+            let pillar_move_cnt=pillar_move_cnt-1;
+            if(bird_move_cnt=0){
             if(jump_token>0){
-                //bird flying up
-                //check if bird has reached the highest point of the screen
-                if(bird.get_y()>0){
-                    do bird.set_y(bird.get_y()-1);
-                    let jump_token=jump_token-1;
+                    //bird flying up
+                    //check if bird has reached the highest point of the screen
+                    if(bird.get_y()>0){
+                        do bird.set_y(bird.get_y()-1);
+                        let jump_token=jump_token-1;
+                    }
+                    else{
+                        let jump_token=0;
+                    }
                 }
                 else{
-                    let jump_token=0;
+                    do bird.set_y(bird.get_y()+1);
                 }
+                let bird_move_cnt=20;
             }
-            else{
-                do bird.set_y(bird.get_y()-1);
-            }
+            let bird_move_cnt=bird_move_cnt-1;
             //checking if the game is over(by hitting the pillar or ground)
             let game_over=false;
             let game_over=check_collision(bird, pillar);//check if the bird has hit the pillar
-            if(bird.get_y()=y_limit){
+            if(bird.get_y()+bird.get_thickness()=y_limit){
+
                 let game_over=true;
             }
             if(game_over){
-                //if collision happens resets the game
+                //if collision happens or bird hit the ground resets the game
                 do reset();
-                let pause=true;
+                //let pause=true;
+                do pause();
                 let jump_token=0;
 
             }
@@ -96,16 +104,23 @@ class FlappyBird{
                 }
                 if(key=80){
                     //p key pause
+
                     let exit=pause();
-                }
+                    }           
+                
+                
                 if(key=32){
                     //space key
                     //jump
                     if(jump_token=0){
-                        let jump=10;
+                        let jump_token=10;
                     }
+                   
                 }
             }
+             while(~(key=0)){
+                        let key=Keyboard.keyPressed();
+                    }
             }
             else{
                 let game_over=false;
@@ -148,18 +163,23 @@ class FlappyBird{
         var int key;
         var boolean exit;
         let exit=false;
-        let key=0;
+        let key=1;
+        //we have to wait for key to be released since we are calling a function here
+       
+        while(~(key=0)){
+            let key=Keyboard.keyPressed();
+        }
         while(key=0){
             let key=Keyboard.keyPressed();
             if(key=81){
                 //q key 
                 //exit 
                 let exit=true;
-            }
+            }   
 
             else {
                 // only if space or pause pressed continue playing
-                if(~((key=80) | (key=32))){
+                if((key=80) | (key=32)){
                     let key=key;
                 }
                 else{

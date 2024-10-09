@@ -12,13 +12,13 @@ class Bird{
         let x_limit=510;
         let x=X;
         let y=Y;
-        let thickness=5;
-        let length=5;
+        let thickness=10;
+        let length=10;
         return this;
     }
     method void draw(){
-        //do Screen.drawRectangle(x,y,x+length,y+thickness);
-        do Screen.drawRectangle(50,50,70,70);
+        do Screen.drawRectangle(x,y,x+length,y+thickness);
+        //do Screen.drawRectangle(50,50,100,100);
         return;
 
     }
