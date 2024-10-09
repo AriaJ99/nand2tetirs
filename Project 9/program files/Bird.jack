@@ -1,0 +1,43 @@
+class Bird{
+    field int length;
+    field int thickness;
+    field int x;
+    field int y;
+    field int y_limit;
+    let y_limit=254;
+    field int x_limit;
+    let x_limit=510;
+    constructor Bird new(int X, int Y){
+        let x=X;
+        let y=Y;
+        let thickness=5;
+        let length=5;
+    }
+    method void draw(){
+        do Screen.drawRectangle(x,y,x+length,y+thickness);
+
+    }
+    method void set_x(int X){
+        let x=X;
+    }
+    method int get_x(){
+        return x;
+    }
+    method void set_y(int Y){
+        let y=Y;
+    }
+    method int get_y(){
+        return Y;
+    }
+    method int get_length(){
+        return length;
+    }
+    method int get_thickness(){
+        return thickness;
+    }
+    method void dispose(){
+        do Memory.deAlloc(this);
+    }
+
+
+}
