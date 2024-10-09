@@ -4,21 +4,27 @@ class Pillar{
     field int upper_edge;
     field int x;
     field int y_limit;
-    let y_limit=254;
+
     field int x_limit;
-    let x_limit=510;
+
     constructor Pillar new(int X){
+        let y_limit=254;
+        let x_limit=510;
         let x=X;
         let width=10;
         let lower_edge=250;
         let upper_edge=240;
-    }
+        return this;}
     method void draw(){
-        do Screen.drawRectangle(x,0,x+width,y+upper_edge);
-        do Screen.drawRectangle(x,lower_edge,x+width,y_limit);
+        //do Screen.drawRectangle(x,0,x+width,upper_edge);
+        //do Screen.drawRectangle(x,lower_edge,x+width,y_limit-1);
+        do Screen.drawRectangle(5,0,40,40);
+        
+        return;
     }
     method void set_x(int X){
         let x=X;
+        return;
     }
     method int get_x(){
         return x;
@@ -34,5 +40,6 @@ class Pillar{
     }
     method void dispose(){
         do Memory.deAlloc(this);
+        return;
     }
 }

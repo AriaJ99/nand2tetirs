@@ -3,37 +3,42 @@ class FlappyBird{
     field Bird bird; //bird of the game
     field int bird_height; //height of the bird
     field Pillar pillar; //moving pillars
-    field int pillar_postion;
+    field int pillar_position;
     field int score;
     field int jump;
     field int y_limit;
-    let y_limit=254;
+ 
     field int x_limit;
-    let x_limit=510;
+
     constructor FlappyBird new(){
         //var int 
-        let pillar_postition=509;
+        let y_limit=254;
+        let x_limit=510;
+        let pillar_position=490;
         let bird_height=127;
         let score=0;
         let jump=10;
         let bird=Bird.new(254,127);
-        let pillar=Pillar.new(500);
+        let pillar=Pillar.new(490);
         return this;
     }
     method void reset(){
         let score=0;
-        let pillar_postion=509;
+        let pillar_position=490;
         let bird_height=127;
+        return;
 
     }
     method void run(){
-        var key;
+        var int key;
         var boolean exit,pause;
         var int jump_token;//a token to keep track of how much jump is left to perform
+        var int move_cnt;//number of cycles for pillar to move forward
+        var boolean game_over;
         let key=0;
         let exit=false;
         let pause=false;
-        var int move_cnt;//number of cycles for pillar to move forward
+
         let move_cnt=0;
 
         while(~exit){
@@ -42,11 +47,15 @@ class FlappyBird{
             do bird.draw();
             do pillar.draw();
             do Screen.setColor(true);
+            while(1){
+
+            }
+
             if(move_cnt=0){
-            let pillar.set_x(pillar.get_x()-1);// pillar moving forward
+            do pillar.set_x(pillar.get_x()-1);// pillar moving forward
             if(pillar.get_x()){
                 do pillar.dispose();
-                let pillar=pillar.new();
+                let pillar=Pillar.new(500);
             }
             let move_cnt=10;
             }
@@ -54,7 +63,7 @@ class FlappyBird{
                 //bird flying up
                 //check if bird has reached the highest point of the screen
                 if(bird.get_y()>0){
-                    let bird.set_y(bird.get_y()-1);
+                    do bird.set_y(bird.get_y()-1);
                     let jump_token=jump_token-1;
                 }
                 else{
@@ -62,36 +71,34 @@ class FlappyBird{
                 }
             }
             else{
-                let bird.set_y(bird.get_y()-1);
+                do bird.set_y(bird.get_y()-1);
             }
             //checking if the game is over(by hitting the pillar or ground)
-            var boolean game_over;
             let game_over=false;
             let game_over=check_collision(bird, pillar);//check if the bird has hit the pillar
-            if(bird.get_y=y_limit){
+            if(bird.get_y()=y_limit){
                 let game_over=true;
             }
-            if(game_over=true){
+            if(game_over){
                 //if collision happens resets the game
-                this.reset();
+                do reset();
                 let pause=true;
                 let jump_token=0;
 
             }
-            if(game_over=false){
+            if(~game_over){
             let key=Keyboard.keyPressed();
             if(~(key=0)){
-                if(k=81){
+                if(key=81){
                     //q key 
                     //exit 
                     let exit=true;
                 }
-                if(k=80){
-                    //p key
-                    //pause
-                    let exit=this.puase();
+                if(key=80){
+                    //p key pause
+                    let exit=pause();
                 }
-                if(k=32){
+                if(key=32){
                     //space key
                     //jump
                     if(jump_token=0){
@@ -106,9 +113,9 @@ class FlappyBird{
             }
             
         }
-
+    return;
     }
-    function boolean check_collision(Bird bird, Pillar pillar){
+    method boolean check_collision(Bird bird, Pillar pillar){
         //compare the lowest and highest points of the bird and pillar opening to see if collision occured
         var int p_x_lower_bound,p_x_upper_bound,b_x_lower_bound,b_x_upper_bound;
         var int p_y_lower_bound,p_y_upper_bound,b_y_lower_bound,b_y_upper_bound;
@@ -121,16 +128,16 @@ class FlappyBird{
         let b_x_lower_bound=bird.get_x();
         let b_x_upper_bound=bird.get_x()+bird.get_length();
         //assign y boundaries
-        let p_y_upper_bound=pillar.get_y_upper_edge();
-        let p_y_lower_bound=pillar.get_y_lower_edge();
+        let p_y_upper_bound=pillar.get_upper_edge();
+        let p_y_lower_bound=pillar.get_lower_edge();
         let b_y_lower_bound=bird.get_y()+bird.get_thickness();
         let b_y_upper_bound=bird.get_y();
         //checking y boundaries
-        if((b_x_upper_bound>p_x_lower_bound & b_x_lower_bound<p_x_upper_bound){
-        if(b_upper_bound<p_upper_bound){
+        if((b_x_upper_bound>p_x_lower_bound) & (b_x_lower_bound<p_x_upper_bound)){
+        if(b_y_upper_bound<p_y_upper_bound){
             let ans=true;
         }
-        if(b_lower_bound>p_lower_bound){
+        if(b_y_lower_bound>p_y_lower_bound){
             let ans=true;
         }
         }
@@ -144,22 +151,21 @@ class FlappyBird{
         let key=0;
         while(key=0){
             let key=Keyboard.keyPressed();
-            if(k=81){
+            if(key=81){
                 //q key 
                 //exit 
                 let exit=true;
             }
-            else if(k=80){
-                //p key
-                //continue
 
-            }
-            else if(k=32){
-                //space key
-                //continue
-            }
             else {
-                let key=0;
+                // only if space or pause pressed continue playing
+                if(~((key=80) | (key=32))){
+                    let key=key;
+                }
+                else{
+                    let key=0;
+                }
+                
             }
         }
         return exit;

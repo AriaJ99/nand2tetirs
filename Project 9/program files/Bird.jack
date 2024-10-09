@@ -4,30 +4,37 @@ class Bird{
     field int x;
     field int y;
     field int y_limit;
-    let y_limit=254;
+    
     field int x_limit;
-    let x_limit=510;
+ 
     constructor Bird new(int X, int Y){
+        let y_limit=254;
+        let x_limit=510;
         let x=X;
         let y=Y;
         let thickness=5;
         let length=5;
+        return this;
     }
     method void draw(){
-        do Screen.drawRectangle(x,y,x+length,y+thickness);
+        //do Screen.drawRectangle(x,y,x+length,y+thickness);
+        do Screen.drawRectangle(50,50,70,70);
+        return;
 
     }
     method void set_x(int X){
         let x=X;
+        return;
     }
     method int get_x(){
         return x;
     }
     method void set_y(int Y){
         let y=Y;
+        return;
     }
     method int get_y(){
-        return Y;
+        return y;
     }
     method int get_length(){
         return length;
@@ -37,6 +44,7 @@ class Bird{
     }
     method void dispose(){
         do Memory.deAlloc(this);
+        return;
     }
 
 
