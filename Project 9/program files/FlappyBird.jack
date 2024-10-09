@@ -6,18 +6,18 @@ class FlappyBird{
     field int pillar_postion;
     field int score;
     field int jump;
-    field int y_limit
+    field int y_limit;
     let y_limit=254;
-    field int x_limit
+    field int x_limit;
     let x_limit=510;
-    constructor FlappyBird(){
+    constructor FlappyBird new(){
         //var int 
         let pillar_postition=509;
         let bird_height=127;
         let score=0;
         let jump=10;
-        let bird=Bird.new();
-        let pillar=Pillar.new();
+        let bird=Bird.new(254,127);
+        let pillar=Pillar.new(500);
         return this;
     }
     method void reset(){
@@ -33,19 +33,28 @@ class FlappyBird{
         let key=0;
         let exit=false;
         let pause=false;
-        var move_cnt;//number of cycles for pillar to move forward
+        var int move_cnt;//number of cycles for pillar to move forward
         let move_cnt=0;
 
         while(~exit){
-            //wait for a key to be pressed
-            do Bird.draw();
-            do Pillar.draw();
-            let position=position-1;// pillar moving forward
+            //clean up the screen and draw figures
+            do Screen.setColor(false);
+            do bird.draw();
+            do pillar.draw();
+            do Screen.setColor(true);
+            if(move_cnt=0){
+            let pillar.set_x(pillar.get_x()-1);// pillar moving forward
+            if(pillar.get_x()){
+                do pillar.dispose();
+                let pillar=pillar.new();
+            }
+            let move_cnt=10;
+            }
             if(jump_token>0){
                 //bird flying up
                 //check if bird has reached the highest point of the screen
-                if(bird_height>0){
-                    let bird_height=bird_height-1;
+                if(bird.get_y()>0){
+                    let bird.set_y(bird.get_y()-1);
                     let jump_token=jump_token-1;
                 }
                 else{
@@ -53,13 +62,13 @@ class FlappyBird{
                 }
             }
             else{
-                let bird_height=bird_height-1;
+                let bird.set_y(bird.get_y()-1);
             }
             //checking if the game is over(by hitting the pillar or ground)
             var boolean game_over;
             let game_over=false;
-            let game_over=check_collision();//check if the bird has hit the pillar
-            if(bird_height=y_limit){
+            let game_over=check_collision(bird, pillar);//check if the bird has hit the pillar
+            if(bird.get_y=y_limit){
                 let game_over=true;
             }
             if(game_over=true){
@@ -99,7 +108,7 @@ class FlappyBird{
         }
 
     }
-    function boolean check_collision(Bird bird, int bird_height, Pillar pillar, int pillar_pos ){
+    function boolean check_collision(Bird bird, Pillar pillar){
         //compare the lowest and highest points of the bird and pillar opening to see if collision occured
         var int p_x_lower_bound,p_x_upper_bound,b_x_lower_bound,b_x_upper_bound;
         var int p_y_lower_bound,p_y_upper_bound,b_y_lower_bound,b_y_upper_bound;
@@ -107,21 +116,21 @@ class FlappyBird{
         var boolean ans;
         let ans=false;
         //assign x boundaries
-        let p_x_upper_bound=Pillar.get_x_upper_bound();
-        let p_x_lower_bound=Pillar.get_x_lower_bound();
-        let b_x_lower_bound=Bird.get_x_lower_bound();
-        let b_x_upper_bound=Bird.get_x_upper_bound();
+        let p_x_upper_bound=pillar.get_x()+pillar.get_width();
+        let p_x_lower_bound=pillar.get_x();
+        let b_x_lower_bound=bird.get_x();
+        let b_x_upper_bound=bird.get_x()+bird.get_length();
         //assign y boundaries
-        let p_y_upper_bound=Pillar.get_y_upper_bound();
-        let p_y_lower_bound=Pillar.get_y_lower_bound();
-        let b_y_lower_bound=Bird.get_y_lower_bound();
-        let b_y_upper_bound=Bird.get_y_upper_bound();
+        let p_y_upper_bound=pillar.get_y_upper_edge();
+        let p_y_lower_bound=pillar.get_y_lower_edge();
+        let b_y_lower_bound=bird.get_y()+bird.get_thickness();
+        let b_y_upper_bound=bird.get_y();
         //checking y boundaries
-        if((b_y_upper_bound>p_y_lower_bound & b_y_lower_bound<p_y_upper_bound){
-        if(b_upper_bound>p_upper_bound){
+        if((b_x_upper_bound>p_x_lower_bound & b_x_lower_bound<p_x_upper_bound){
+        if(b_upper_bound<p_upper_bound){
             let ans=true;
         }
-        if(b_lower_bound<p_lower_bound){
+        if(b_lower_bound>p_lower_bound){
             let ans=true;
         }
         }
@@ -154,6 +163,12 @@ class FlappyBird{
             }
         }
         return exit;
+    }
+    method void dispose(){
+        do bird.dispose();
+        do pillar.dispose();
+        do Memory.deAlloc(this);
+        return;
     }
 
 
