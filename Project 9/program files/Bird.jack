@@ -17,10 +17,31 @@ class Bird{
         return this;
     }
     method void draw(){
+        do Screen.setColor(true);
+        //drawing a graphical bird(it was hard to locate it)
+        //do draw_bird();
         do Screen.drawRectangle(x,y,x+length,y+thickness);
         //do Screen.drawRectangle(50,50,100,100);
         return;
 
+    }
+    method void move_up(){
+        let y=y-1;
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x,y,x+length,y+1);
+        do Screen.setColor(false);
+        do Screen.drawRectangle(x,y+thickness,x+length,y+thickness+1);
+        do Screen.setColor(true);
+        return;
+    }
+    method void move_down(){
+        let y=y+1;
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x,y+thickness-1,x+length,y+thickness);
+        do Screen.setColor(false);
+        do Screen.drawRectangle(x,y-1,x+length,y);
+        do Screen.setColor(true);
+        return;
     }
     method void set_x(int X){
         let x=X;
@@ -46,6 +67,27 @@ class Bird{
         do Memory.deAlloc(this);
         return;
     }
+    method void draw_bird(int location) {
+	var int memAddress;
+	let memAddress = 16384 + location;
+	do Memory.poke(memAddress + 0, 0);
+	do Memory.poke(memAddress + 32, 0);
+	do Memory.poke(memAddress + 64, 1008);
+	do Memory.poke(memAddress + 96, 1160);
+	do Memory.poke(memAddress + 128, 2692);
+	do Memory.poke(memAddress + 160, 4226);
+	do Memory.poke(memAddress + 192, 8066);
+	do Memory.poke(memAddress + 224, 8490);
+	do Memory.poke(memAddress + 256, 16554);
+	do Memory.poke(memAddress + 288, 15530);
+	do Memory.poke(memAddress + 320, 8498);
+	do Memory.poke(memAddress + 352, 15876);
+	do Memory.poke(memAddress + 384, 520);
+	do Memory.poke(memAddress + 416, 496);
+	do Memory.poke(memAddress + 448, 0);
+	do Memory.poke(memAddress + 480, 0);
+	return;
+}
 
 
 }

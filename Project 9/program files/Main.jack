@@ -1,3 +1,9 @@
+/*
+To play just use space
+p for pause
+q for quite
+
+*/
 class Main {
     function void main(){
         var FlappyBird game;

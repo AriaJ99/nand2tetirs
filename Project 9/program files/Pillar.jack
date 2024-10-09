@@ -13,17 +13,33 @@ class Pillar{
         let x_limit=510;
         let x=X;
         let width=20;
-        let gap=40;
-        let upper_edge=Random.randRange(130)+70;
+        let gap=60;
+        let upper_edge=Random.randRange(90)+100;
+        let upper_edge=Random.randRange(90)+100;
+        let upper_edge=Random.randRange(90)+100;
+        let upper_edge=Random.randRange(90)+100;        
         let lower_edge=upper_edge+gap;
         //let random= Random.new();
         return this;
         }
     method void draw(){
+        do Screen.setColor(true);
         do Screen.drawRectangle(x,0,x+width,upper_edge);
         do Screen.drawRectangle(x,lower_edge,x+width,y_limit-1);
         //do Screen.drawRectangle(5,5,40,40);
         
+        return;
+    }
+    method void move_forward(){
+        let x=x-1;
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x,0,x+1,upper_edge);
+        do Screen.drawRectangle(x,lower_edge,x+1,y_limit-1);
+        do Screen.setColor(false);
+        do Screen.drawRectangle(x+width,0,x+width+1,upper_edge);
+        do Screen.drawRectangle(x+width,lower_edge,x+width+1,y_limit-1);
+        do Screen.setColor(true);
+
         return;
     }
     method void set_x(int X){
@@ -43,6 +59,9 @@ class Pillar{
         return width;
     }
     method void dispose(){
+        do Screen.setColor(false);
+        do Screen.drawRectangle(x,0,x+width,upper_edge);
+        do Screen.drawRectangle(x,lower_edge,x+width,y_limit-1);
         do Memory.deAlloc(this);
         return;
     }
