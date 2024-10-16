@@ -241,10 +241,15 @@ class CompilationEngine:
         (token,tokenType)=self.tokenizer.advance()
         self.currentTokenChecked=False
         self.compileParameterList()
-        #) symbol don't need advance it was done previously by parameter list
+        #) symbol 
+        if(self.currentTokenChecked):
+            self.tokenizer.advance()
+            self.currentTokenChecked=False
+        token,tokenType=self.tokenizer.getToken(), self.tokenizer.getTokenType()
         self.parsedCode+=xml_wrap(token,tokenType)
         #subroutine body
         self.tokenizer.advance()
+        self.currentTokenChecked=False
         self.compileSubroutineBody()
         self.parsedCode+="</subroutineDec>\n"
         self.currentTokenChecked=True   
@@ -800,7 +805,7 @@ class CompilationEngine:
         file.close()
 
         
-j=JackTokenizer("E:/Abo akademi/2024-2025/period 1/Software Construction/nand2tetirs/project10/Square.jack")
+#j=JackTokenizer("E:/Abo akademi/2024-2025/period 1/Software Construction/nand2tetirs/project10/Square.jack")
 #s="abcd"
 #print(changables)
 
@@ -808,28 +813,30 @@ j=JackTokenizer("E:/Abo akademi/2024-2025/period 1/Software Construction/nand2te
 #p=CompilationEngine("E:/Abo akademi/2024-2025/period 1/Software Construction/nand2tetirs/project10/Square.jack")
 #p.create_parser_file("E:/Abo akademi/2024-2025/period 1/Software Construction/nand2tetirs/project10/MainParser.xml")
 def directory_tokenizer(path):
-    path=os.path.abspath(path)
+    #path=os.path.abspath(path)
 
     if(os.path.isfile(path)):
 
         j=JackTokenizer(path)
-        j.create_token_file(path[0:-3]+"T.xml")
+        j.create_token_file(path[0:-5]+"T.xml")
     else:
+
         for file in os.listdir(path):
-            if file[-4:]=="jack":
+            if file.endswith(".jack"):
                         #print(path)
-                        j=JackTokenizer(path)
-                        j.create_token_file(path[0:-3]+"T.xml")
+                        j=JackTokenizer(path+"/"+file)
+                        j.create_token_file(file[0:-5]+"T.xml")
 
 def directory_parser(path):
-    path=os.path.abspath(path)
+    #path=os.path.abspath(path)
     if(os.path.isfile(path)):
         j=CompilationEngine(path)
-        j.create_parser_file(path[0:-3]+".xml")
+        j.create_parser_file(path[0:-5]+".xml")
     else:
         for file in os.listdir(path):
-            if file[-4:]=="jack":
-                        j=CompilationEngine(path)
-                        j.create_parser_file(path[0:-3]+".xml")
+            if file.endswith(".jack"):
+                        j=CompilationEngine(path+"/"+file)
+                        j.create_parser_file(file[0:-5]+".xml")
+
 directory_tokenizer(sys.argv[1])
 directory_parser(sys.argv[1])
