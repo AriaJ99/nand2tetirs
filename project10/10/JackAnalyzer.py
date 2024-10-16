@@ -86,6 +86,7 @@ class JackTokenizer:
         #take the next token
         if(not self.hasMoreTokens()):
             return
+
         self.token=""
         
         if(self.codeContent[self.position]=='\"'):
@@ -250,20 +251,17 @@ class CompilationEngine:
     def compileParameterList(self):
         #((type varName)(',' type varName)*)?
         self.parsedCode+="<parameterList>\n"
-        
-        #static or field
         if(self.currentTokenChecked):
             self.tokenizer.advance()
             self.currentTokenChecked=False
         token,tokenType=self.tokenizer.getToken(), self.tokenizer.getTokenType()
         #check if there's any
-        if(token in symbols):
-            self.parsedCode+="</parameterList>\n"
-            return
-        self.parsedCode+=xml_wrap(token,tokenType)
-
+        #self.parsedCode+=xml_wrap(token,tokenType)
+        #variable name
+        #(token,tokenType)=self.tokenizer.advance()
+        #self.parsedCode+=xml_wrap(token,tokenType)
         #check if there's any variable
-        (token,tokenType)=self.tokenizer.advance()
+        #(token,tokenType)=self.tokenizer.advance()
         #check if the tokentype is keyword(in this case there's variable if it's symbol we should skip)
         if(tokenType=="keyword"):
             #first var
@@ -274,16 +272,20 @@ class CompilationEngine:
             self.parsedCode+=xml_wrap(token,tokenType)
             #, symbol for loop
             (token,tokenType)=self.tokenizer.advance()
-            while(tokenType==","):
+            self.currentTokenChecked=False
+            while(token==","):
+                self.parsedCode+=xml_wrap(token,tokenType)
                 #var type
+                (token,tokenType)=self.tokenizer.advance()
                 self.parsedCode+=xml_wrap(token,tokenType)
                 #name token
                 (token,tokenType)=self.tokenizer.advance()
                 self.parsedCode+=xml_wrap(token,tokenType)
                 #next symbol(either , or ')')
                 (token,tokenType)=self.tokenizer.advance()
+                self.currentTokenChecked=False
         self.parsedCode+="</parameterList>\n"
-        self.currentTokenChecked=False     
+        
     def compileSubroutineBody(self):
         #'{' varDec* statements'}'
         self.parsedCode+="<subroutineBody>\n"
@@ -296,21 +298,14 @@ class CompilationEngine:
         #var dec check for var decleration
         (token,tokenType)=self.tokenizer.advance()
         self.currentTokenChecked=False
-        if(token=="var"):
+        while(token=="var"):
             self.compileVarDec()
             #look for , or statements
-            (token,tokenType)=self.tokenizer.advance()
-            while(token==","):
-                #, symbol
-                self.parsedCode+=xml_wrap(token,tokenType)
-                # type
-                (token,tokenType)=self.tokenizer.advance()
-                self.parsedCode+=xml_wrap(token,tokenType)
-                # name 
-                (token,tokenType)=self.tokenizer.advance()
-                self.parsedCode+=xml_wrap(token,tokenType)
-                #next round
-                (token,tokenType)=self.tokenizer.advance()
+            if(self.currentTokenChecked):
+                self.tokenizer.advance()
+                self.currentTokenChecked=False
+            token,tokenType=self.tokenizer.getToken(), self.tokenizer.getTokenType()
+            
         #statements
         self.currentTokenChecked=False
         self.compileStatments()
@@ -369,7 +364,7 @@ class CompilationEngine:
                 case "if":
                     self.compileIf()
                 case "while":
-                    self.compileWhile
+                    self.compileWhile()
                 case "let":
                     self.compileLet()
                 case "do":
@@ -389,8 +384,9 @@ class CompilationEngine:
         if(self.currentTokenChecked):
             self.tokenizer.advance()
             self.currentTokenChecked=False
-        #let token
         token,tokenType=self.tokenizer.getToken(), self.tokenizer.getTokenType()
+        #let token
+
         self.parsedCode+=xml_wrap(token,tokenType)
         #name token
         (token,tokenType)=self.tokenizer.advance()
@@ -401,9 +397,13 @@ class CompilationEngine:
         if(token=="["):
             #expression
             (token,tokenType)=self.tokenizer.advance()
+            self.currentTokenChecked=False
             self.compileExpression()
             #] symbol
-            (token,tokenType)=self.tokenizer.advance()
+            if(self.currentTokenChecked):
+                self.tokenizer.advance()
+                self.currentTokenChecked=False
+            token,tokenType=self.tokenizer.getToken(), self.tokenizer.getTokenType()
             self.parsedCode+=xml_wrap(token,tokenType)
             #= symbol
             (token,tokenType)=self.tokenizer.advance()
@@ -557,13 +557,16 @@ class CompilationEngine:
             self.currentTokenChecked=True
             
         elif(token=="("):
+            #print(self.parsedCode[-80:-1])
             self.tokenizer.advance()
             self.currentTokenChecked=False
+            
             self.compileExpressionList()
             #) symbol
             if(self.currentTokenChecked):
                 self.tokenizer.advance()
                 self.currentTokenChecked=False
+            token,tokenType=self.tokenizer.getToken(), self.tokenizer.getTokenType()
             self.parsedCode+=xml_wrap(token,tokenType)
             self.currentTokenChecked=True
 
@@ -604,6 +607,7 @@ class CompilationEngine:
         if(self.currentTokenChecked):
             self.tokenizer.advance()
             self.currentTokenChecked=False
+        token,tokenType=self.tokenizer.getToken(), self.tokenizer.getTokenType()
         #term 
         self.compileTerm()
         if(self.currentTokenChecked):
@@ -611,7 +615,7 @@ class CompilationEngine:
             self.currentTokenChecked=False
         token,tokenType=self.tokenizer.getToken(), self.tokenizer.getTokenType()
         
-        while(token in ["+","-","*","/","&","|","<",">","="]):
+        while(token in ["+","-","*","/",change["&"],"|",change["<"],change[">"],"="]):
             #op symbol
             self.parsedCode+=xml_wrap(token,tokenType)
             #term
@@ -679,6 +683,7 @@ class CompilationEngine:
             #check the next token
             self.tokenizer.advance()
             self.currentTokenChecked=False
+            token,tokenType=self.tokenizer.getToken(), self.tokenizer.getTokenType()
             # determine the case
             if(token=="["):
                 #var Name '[' expression ']'
@@ -739,7 +744,6 @@ class CompilationEngine:
                     token,tokenType=self.tokenizer.getToken(), self.tokenizer.getTokenType()
                     self.parsedCode+=xml_wrap(token,tokenType)
                     self.currentTokenChecked=True
-                    pass
                 
             else:
                 #var Name
@@ -756,13 +760,19 @@ class CompilationEngine:
             self.tokenizer.advance()
             self.currentTokenChecked=False
         token,tokenType=self.tokenizer.getToken(), self.tokenizer.getTokenType()
+        #print(token)
         #check if there's expression
         if(token!=')'):
             #expression
             self.compileExpression()
             #check for more
-            (token,tokenType)=self.tokenizer.advance()
+            if(self.currentTokenChecked):
+                self.tokenizer.advance()
+                self.currentTokenChecked=False
+            token,tokenType=self.tokenizer.getToken(), self.tokenizer.getTokenType()    
+            
             while(token==','):
+                
                 #, symbol
                 self.parsedCode+=xml_wrap(token,tokenType)
                 (token,tokenType)=self.tokenizer.advance()
@@ -790,13 +800,13 @@ class CompilationEngine:
         file.close()
 
         
-j=JackTokenizer("E:/Abo akademi/2024-2025/period 1/Software Construction/nand2tetirs/project10/Main.jack")
+j=JackTokenizer("E:/Abo akademi/2024-2025/period 1/Software Construction/nand2tetirs/project10/Square.jack")
 #s="abcd"
 #print(changables)
-#print(j.codeContent)
-#.create_token_file("E:/Abo akademi/2024-2025/period 1/Software Construction/nand2tetirs/project10/MainTokenizer.xml")
-#p=CompilationEngine("E:/Abo akademi/2024-2025/period 1/Software Construction/nand2tetirs/project10/Main.jack")
-#p.create_parser_file("E:/Abo akademi/2024-2025/period 1/Software Construction/nand2tetirs/project10/Main.xml")
+
+#j.create_token_file("E:/Abo akademi/2024-2025/period 1/Software Construction/nand2tetirs/project10/MainTokenizer.xml")
+#p=CompilationEngine("E:/Abo akademi/2024-2025/period 1/Software Construction/nand2tetirs/project10/Square.jack")
+#p.create_parser_file("E:/Abo akademi/2024-2025/period 1/Software Construction/nand2tetirs/project10/MainParser.xml")
 def directory_tokenizer(path):
     path=os.path.abspath(path)
 
