@@ -17,9 +17,13 @@ class Output {
 
     // Character map for displaying characters
     static Array charMaps; 
-
+    static int cursorX,cursorY;
     /** Initializes the screen, and locates the cursor at the screen's top-left. */
     function void init() {
+        let cursorX=0;
+        let curcsorY=0;
+        do initMap();
+        return;
     }
 
     // Initializes the character map array
@@ -180,6 +184,13 @@ class Output {
     /** Displays the given character at the cursor location,
      *  and advances the cursor one column forward. */
     function void printChar(char c) {
+        var array char;
+        var int j;
+        let char=getMap(c);
+        let j=0;
+        while(j<11){
+            
+        }
     }
 
     /** displays the given string starting at the cursor location,
@@ -194,9 +205,12 @@ class Output {
 
     /** Advances the cursor to the beginning of the next line. */
     function void println() {
+        let cursorY=cursorY+11;
+        let cursorX=0;
     }
 
     /** Moves the cursor one column back. */
     function void backSpace() {
+
     }
 }
