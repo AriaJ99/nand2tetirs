@@ -17,6 +17,7 @@ class Memory {
         let freeList=0;
         let heap[0]=0;
         let heap[1]=14335;
+        return;
 
     }
 
