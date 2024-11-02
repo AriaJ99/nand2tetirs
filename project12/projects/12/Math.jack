@@ -23,15 +23,42 @@ class Math {
      *  in an expression, it handles it by invoking this method. 
      *  Thus, in Jack, x * y and Math.multiply(x,y) return the same value. */
     function int multiply(int x, int y) {
-        var int powersOfTwo,sum;
+        var int powersOfTwo,sum,powerCnt;
+        var boolean sign;
+        var bool sign;
+        let sign=true;
+        let powerCnt=0;
+        if(x<0){
+            let x=-x;
+            if(y>-1){
+                let sign=false;
+            }
+            else{
+                let y=-y;
+            }
+        }
+        else{
+            if(y<0){
+                let y=-y;
+                let sign=false;
+            }
+        }
         let powersOfTwo=1;
         let sum=0;
-        while(powersOfTwo<y){
-            if(powersOfTwo&y=1){
-                sum=sum+x;
+        while(powersOfTwo<(y+1)){
+            if((powersOfTwo&y)=powersOfTwo){
+                let sum=sum+x;
             }
             let x=x+x;
             let powersOfTwo=powersOfTwo+powersOfTwo;
+            let powerCnt=powerCnt+1;
+            if(powerCnt=15){
+                //overflow of the int
+                let powersOfTwo=y+1;
+            }
+        }
+        if(~sign){
+            let sum=-sum;
         }
         return sum;
     }
@@ -42,28 +69,61 @@ class Math {
      *  Thus, x/y and Math.divide(x,y) return the same value. */
     function int divide(int x, int y) {
         var int q;
-        if(y>x){
-            return 0;
-        }
-        let q = divide(x,2*y);
-        if((x-(2*q*y))<y){
-            return 2*q;
+        var bool sign;
+        let sign=true;
+        if(x<0){
+            let x=-x;
+            if(y>0){
+                let sign=false;
+            }
+            else{
+                let y=-y;
+            }
         }
         else{
-            return 2*q+1;
+            if(y<0){
+                let y=-y;
+                let sign=false;
+            }
+        }
+        if(y>x | y<0){
+            return 0;
+        }
+        let q = Math.divide(x,y+y);
+        if((x-(2*q*y))<y){
+            if(~sign){
+
+                let q=-q;
+            }
+            return q+q;
+        }
+        else{
+            if(~sign){
+                let q=q+q+1;
+                let q=-q;
+                
+                
+            }
+            else{
+                let q=q+q+1;
+            }
+            return q;
         }
     }
 
     /** Returns the integer part of the square root of x. */
     function int sqrt(int x) {
-        var int y,n;
-        let y=1;
-        let n=x;
-        while(n>y){
-            let n=(n+y)/2;
-            let y=x/n;
+        var int y,n,ans;
+        let ans=0;
+        let y=0;
+        let n=182;
+        while(y<n){
+            if(Math.multiply(y,y)<(x) | (y*y=x)){
+                let ans=y;
+            }
+            let y=y+1;
         }
-        return n;
+        return ans;
     }
 
     /** Returns the greater value. */
@@ -84,9 +144,9 @@ class Math {
 
     /** Returns the absolute value of x. */
     function int abs(int x) {
-        if(a>-1){
-            return a;
+        if(x>-1){
+            return x;
         }
-        return -a;
+        return -x;
     }
 }
