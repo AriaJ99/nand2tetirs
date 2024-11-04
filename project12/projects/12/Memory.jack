@@ -38,18 +38,20 @@ class Memory {
         var int move,prev;
         let move=freeList;
         let prev=-1;
-        while(heap[move+1]<(size+2)){
+        while(heap[move+1]<(size)){
             let prev=move;
             let move=heap[move];
         }
-        let heap[move+2+size+1]=heap[move+1]-size;
+
+        let heap[move+2+size+1]=heap[move+1]-size-2;
         let heap[move+1]=size;
-        if(heap[move]=0){
-            let heap[move+2+size]=0;//end of linked list
-        }
-    
+
+        let heap[move+2+size]=heap[move];
+        let heap[move]=move+2+size;
         //let heap[move]=move+2+size;
-        let freeList=move+2+size;
+        if(prev=-1){
+            let freeList=move+2+size;
+        }
         return move+2+heap;
 
     }
@@ -58,23 +60,53 @@ class Memory {
      *  it available for future allocations. */
     function void deAlloc(Array o) {
         var int move,prev;
+
+ 
+               
         let move=freeList;
         let prev=-1;
-        while((heap[move]>0) & (~(heap+move=(o-2)))){
+        if(freeList>(o-2-heap)){
+            //if memory is before freeList
+            if(freeList=(o+o[-1]-heap)){
+                //if memory is connected with freeList
+                let o[-1]=o[-1]+2+heap[freeList+1];
+            }
+            let o[-2]=freeList;
+            let freeList=o-heap-2;
+            return;
+        }
+        ////////////////////////////////////////////////////////////////////////////////////
+        while((move<(o-2-heap))){
             let prev=move;
             let move=heap[move];
         } 
-        if(heap[move]=0){
-            //let heap[move]=o-heap-2;
-            //let heap[o-heap-2]=0;
-            let prev=heap[freeList+1];
-            let freeList=o-heap-2;
-            let heap[freeList+1]=heap[freeList+1]+prev;
+        
+        if(heap+prev+2+heap[prev+1]=(o-2)){
+            if(o+o[-1]=(heap+move)){
+                let heap[prev+1]=heap[prev+1]+o[-1]+heap[move+1]+4;
+                let heap[prev]=heap[move];
+            }
+            else{
+                let heap[prev+1]=o[-1]+2+heap[prev+1];
+                let heap[prev]=move;
+            }
+            
+            
         }
         else{
-            let heap[prev+1]=heap[prev+1]+heap[move+1];
-            let heap[prev]=heap[move];
+            let heap[prev]=(o-2-heap);
+            if(o+o[-1]=(heap+move)){
+                let o[-1]=o[-1]+2+heap[move+1];
+                let o[-2]=heap[move];
+               
+            }
+            else{
+                let o[-2]=move;
+                
+            }
+            let heap[prev]=o-2-heap;
         }
+
         return;
     }    
 }

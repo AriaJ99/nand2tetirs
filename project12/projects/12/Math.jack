@@ -71,6 +71,9 @@ class Math {
         var int q;
         var bool sign;
         let sign=true;
+        if(x=0){
+            return 0;
+        }
         if(x<0){
             let x=-x;
             if(y>0){
