@@ -22,7 +22,7 @@ class String {
 		{
 			let str = Array.new(100);
 		}
-        let str=Array.new(maxLength);
+        let str=Array.new(maxLength+1);
         let maxLen=maxLength;
         let len=0;
         return this;
